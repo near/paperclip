@@ -92,8 +92,8 @@ impl<T, B> App<T, B>
 where
     B: MessageBody,
     T: ServiceFactory<
+        ServiceRequest,
         Config = (),
-        Request = ServiceRequest,
         Response = ServiceResponse<B>,
         Error = Error,
         InitError = (),
@@ -167,10 +167,10 @@ where
     /// **NOTE:** This doesn't affect spec generation.
     pub fn default_service<F, U>(mut self, f: F) -> Self
     where
-        F: actix_service::IntoServiceFactory<U>,
+        F: actix_service::IntoServiceFactory<U, ServiceRequest>,
         U: ServiceFactory<
+                ServiceRequest,
                 Config = (),
-                Request = ServiceRequest,
                 Response = ServiceResponse,
                 Error = Error,
                 InitError = (),
@@ -201,8 +201,8 @@ where
         mw: M,
     ) -> App<
         impl ServiceFactory<
+            ServiceRequest,
             Config = (),
-            Request = ServiceRequest,
             Response = ServiceResponse<B1>,
             Error = Error,
             InitError = (),
@@ -212,7 +212,7 @@ where
     where
         M: Transform<
             T::Service,
-            Request = ServiceRequest,
+            ServiceRequest,
             Response = ServiceResponse<B1>,
             Error = Error,
             InitError = (),
@@ -233,8 +233,8 @@ where
         mw: F,
     ) -> App<
         impl ServiceFactory<
+            ServiceRequest,
             Config = (),
-            Request = ServiceRequest,
             Response = ServiceResponse<B1>,
             Error = Error,
             InitError = (),
@@ -307,9 +307,7 @@ where
 #[derive(Clone)]
 struct SpecHandler(Arc<RwLock<DefaultApiRaw>>);
 
-impl actix_web::dev::Factory<(), Ready<Result<HttpResponse, Error>>, Result<HttpResponse, Error>>
-    for SpecHandler
-{
+impl actix_web::dev::Handler<(), Ready<Result<HttpResponse, Error>>> for SpecHandler {
     fn call(&self, _: ()) -> Ready<Result<HttpResponse, Error>> {
         fut_ok(HttpResponse::Ok().json(&*self.0.read()))
     }
