@@ -223,7 +223,7 @@ where
         >,
     >
     where
-        F: FnMut(ServiceRequest, &mut T::Service) -> R + Clone,
+        F: Fn(ServiceRequest, &T::Service) -> R + Clone,
         R: Future<Output = Result<ServiceResponse, Error>>,
     {
         Resource {
@@ -447,7 +447,7 @@ where
         >,
     >
     where
-        F: FnMut(ServiceRequest, &mut T::Service) -> R + Clone,
+        F: Fn(ServiceRequest, &T::Service) -> R + Clone,
         R: Future<Output = Result<ServiceResponse, Error>>,
     {
         Scope {
@@ -455,7 +455,7 @@ where
             path_map: self.path_map,
             definitions: self.definitions,
             security: self.security,
-            inner: self.inner.take().map(|s| s.wrap_fn(mw)),
+            inner: self.inner.take().map(move |s| s.wrap_fn(mw)),
         }
     }
 

@@ -243,7 +243,7 @@ where
     >
     where
         B1: MessageBody,
-        F: FnMut(ServiceRequest, &mut T::Service) -> R + Clone,
+        F: Fn(ServiceRequest, &T::Service) -> R + Clone,
         R: Future<Output = Result<ServiceResponse<B1>, Error>>,
     {
         App {
