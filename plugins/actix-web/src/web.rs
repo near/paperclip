@@ -2,7 +2,7 @@
 
 pub use actix_web::web::{
     block, service, to, Bytes, BytesMut, Data, Form, FormConfig, HttpRequest, HttpResponse, Json,
-    JsonConfig, Path, PathConfig, Payload, PayloadConfig, Query, QueryConfig,
+    JsonConfig, Path, PathConfig, Payload, PayloadConfig, Query, QueryConfig, ReqData,
 };
 
 use crate::Mountable;
@@ -339,6 +339,14 @@ where
     /// **NOTE:** This doesn't affect spec generation.
     pub fn data<U: 'static>(mut self, data: U) -> Self {
         self.inner = self.inner.take().map(|s| s.data(data));
+        self
+    }
+
+    /// Proxy for [`actix_web::Scope::app_data`](https://docs.rs/actix-web/*/actix_web/struct.Scope.html#method.data).
+    ///
+    /// **NOTE:** This doesn't affect spec generation.
+    pub fn app_data<U: 'static>(mut self, data: U) -> Self {
+        self.inner = self.inner.take().map(|s| s.app_data(data));
         self
     }
 
