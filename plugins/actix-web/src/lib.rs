@@ -2,6 +2,8 @@
 extern crate actix_web2 as actix_web;
 #[cfg(feature = "actix3")]
 extern crate actix_web3 as actix_web;
+#[cfg(feature = "actix4")]
+extern crate actix_web4 as actix_web;
 
 pub mod web;
 
@@ -14,8 +16,7 @@ use self::web::{RouteWrapper, ServiceConfig};
 use actix_service::ServiceFactory;
 use actix_web::{
     dev::{HttpServiceFactory, MessageBody, ServiceRequest, ServiceResponse, Transform},
-    web::HttpResponse,
-    Error,
+    Error, HttpResponse,
 };
 use futures::future::{ok as fut_ok, Ready};
 use paperclip_core::v2::models::{

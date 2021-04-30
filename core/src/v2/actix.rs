@@ -594,14 +594,10 @@ macro_rules! json_with_status {
         {
             fn respond_to(self, _: &HttpRequest) -> HttpResponse {
                 let status: StatusCode = $status;
-                let body = match serde_json::to_string(&self.0) {
-                    Ok(body) => body,
-                    Err(e) => return HttpResponse::from_error(e.into()),
-                };
 
                 HttpResponse::build(status)
                     .content_type("application/json")
-                    .body(body)
+                    .json(self.0)
             }
         }
 
